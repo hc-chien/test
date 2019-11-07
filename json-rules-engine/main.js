@@ -1,19 +1,32 @@
-'use strict';
+const { resolve } = require('path');
+const { readdir } = require('fs').promises;
 var getMessages = require('./Messages.js').getMessages;
-let Engine = require('json-rules-engine').Engine;
 const fs = require('fs');
+let Engine = require('json-rules-engine').Engine;
 
-function getRule(fname)
-{
-  let rawData = fs.readFileSync("rules/" + fname +".json");
-  return JSON.parse(rawData);
+// get files from dir
+async function* getFiles(dir) {
+  const dirents = await readdir(dir, { withFileTypes: true });
+  for (const dirent of dirents) {
+    const res = resolve(dir, dirent.name);
+    if (dirent.isDirectory()) {
+      yield* getFiles(res);
+    } else {
+      yield res;
+    }
+  }
+}
+
+if (process.argv[2] == undefined) {
+  console.log("using: node main.js [filename]");
+  return;
 }
 
 let options = {
   allowUndefinedFacts: true
 };
 
-let engine = new Engine([], options)
+let engine = new Engine([], options);
 
 // exist operator
 engine.addOperator('exist', (factValue, jsonValue) => {
@@ -26,33 +39,28 @@ engine.addOperator('exist', (factValue, jsonValue) => {
 
 // regex operator
 engine.addOperator('regex', (factValue, jsonValue) => {
-  var  myRe = new RegExp(jsonValue, 'g');
+  var myRe = new RegExp(jsonValue, 'g');
   var myArray = myRe.exec(factValue);
   return myRe.lastIndex > 0;
 });
 
-// add rules
-engine.addRule(getRule("asset"));
-engine.addRule(getRule("http"));
-engine.addRule(getRule("error"));
-engine.addRule(getRule("event"));
-engine.addRule(getRule("message"));
-
-if (process.argv[2] == undefined) {
-  console.log("using: node main.js [filename]");
-  return;
-}
-
-// run
-var facts = getMessages(process.argv[2]);
-facts.forEach(function (fact) {
-  engine
-    .run(fact)
-    .then(results => {
-      if (!results.events.length) return
-      // results.events.map(event => console.log(event))
-      delete fact["success-events"];
-      console.log(JSON.stringify(fact, null, 2));
-    })
-    .catch(err => console.log(err.stack))
+(async () => {
+  for await (const f of getFiles('rules')) {
+    let rawData = fs.readFileSync(f);
+    engine.addRule(JSON.parse(rawData));
+    console.log(f);
+  }
+})().then(exec => {
+  var facts = getMessages(process.argv[2]);
+  facts.forEach(function (fact) {
+    engine
+      .run(fact)
+      .then(results => {
+        if (!results.events.length) return
+        // results.events.map(event => console.log(event))
+        delete fact["success-events"];
+        console.log(JSON.stringify(fact, null, 2));
+      })
+      .catch(err => console.log(err.stack))
+  });
 });
