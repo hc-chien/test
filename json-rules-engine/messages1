@@ -298,7 +298,7 @@
    }
 }
 
-# gateway send an http response
+# 10. gateway send an http response
 {
    "taskId": "WF-1570504132-zdpyYr",
    "dateTime": "2019-10-08T05:32:34.231Z",
