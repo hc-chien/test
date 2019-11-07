@@ -1,5 +1,14 @@
 ################################################
 # misc log examples
+#  1. debug message 
+#  2. error message with exception
+#  3. non error message with exception
+#  4. message for events
+#  5. message for no reason
+#
+# business log after filtering:
+#  2. error message with exception (errorRaised, level)
+#  4. message for events (data.eventType)
 ################################################
  
 # not product log

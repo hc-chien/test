@@ -8,14 +8,14 @@
 #  5. asset hosts created / info
 #  6. developer write a debug message / debug
 #  7. developer write an important warning message / warn
-#  8. function executed and results received / debug
+#  8. receive results from executed function / debug
 #  9. gateway receive an http response from openfaas / debug
 # 10. gateway send an http response to frontend / debug
 #
-# business log for operator:
+# business log after filtering:
 #  1. gateway receive an http reques from frontend / debug (httpRequestReceived)
 #  5. asset hosts created / info                           (assetCreated)
-#  7. developer write an important warning message / warn  (message)
+#  7. developer write an important warning message / warn  (message, level)
 # 10. gateway send an http response to frontend / debug    (httpResponseSend)
 ################################################
 
