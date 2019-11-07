@@ -1,0 +1,19 @@
+{
+  "conditions": {
+    "any": [{
+      "fact": "httpRequestReceived",
+      "operator": "exist",
+      "value": true
+    }, {
+      "fact": "httpResponseSend",
+      "operator": "exist",
+      "value": true
+    }]
+  },
+  "event": {
+    "type": "tagging",
+    "params": {
+       "tag": "product"
+    }
+  }
+}

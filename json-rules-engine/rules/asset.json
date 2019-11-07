@@ -1,0 +1,27 @@
+{
+  "conditions": {
+    "any": [{
+      "fact": "assetCreated",
+      "operator": "exist",
+      "value": true
+    }, {
+      "fact": "assetUpdated",
+      "operator": "exist",
+      "value": true
+    }, {
+      "fact": "assetRemoved",
+      "operator": "exist",
+      "value": true
+    }, {
+      "fact": "assetOperated",
+      "operator": "exist",
+      "value": true
+    }]
+  },
+  "event": {
+    "type": "tagging",
+    "params": {
+       "tag": "product"
+    }
+  }
+}

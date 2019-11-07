@@ -1,0 +1,60 @@
+'use strict';
+var getMessages = require('./Messages.js').getMessages;
+let Engine = require('json-rules-engine').Engine;
+const fs = require('fs');
+
+function getRule(fname)
+{
+  let rawData = fs.readFileSync("rules/" + fname +".json");
+  return JSON.parse(rawData);
+}
+
+let options = {
+  allowUndefinedFacts: true
+};
+/**
+ * Setup a new engine
+ */
+let engine = new Engine([], options)
+
+engine.addOperator('exist', (factValue, jsonValue) => {
+  if (factValue !== undefined && jsonValue) {
+      return jsonValue;
+  } else {
+      return !jsonValue;
+  }
+});
+
+engine.addRule(getRule("asset"));
+
+let facts = {
+   "taskId": "WF-1570504132-zdpyYr",
+   "dateTime": "2019-10-08T05:32:34.231Z",
+   "level": "info",
+   "podId": "corezilla:commandusers-c775854d4-49cb9",
+   "component": "CommandHosts",
+   "function": "hosts",
+   "assetCreated": {
+    "host": [
+        {
+            "id": "S-dk0p08kqc",
+            "project":  ["PJ-dk1ha57i4", "PJ-dk1ha57i4"]
+        },
+        {
+            "id": "S-jk0s08kqo",
+            "project":  ["PJ-dk1ha57i4", "PJ-dk1ha57i4"]
+        }
+    ] }
+};
+
+facts = getMessages();
+
+engine
+  .run(facts)
+  .then(results => {
+    console.log(results);
+    console.log(facts);
+    results.events.map(event => console.log(event))
+    // results.events.map(event => console.log(event.params.message))
+  })
+  .catch(err => console.log(err.stack))

@@ -1,0 +1,16 @@
+{
+  "conditions": {
+    "any": [{
+      "fact": "data",
+      "operator": "exist",
+      "value": true,
+      "path": "$.eventType"
+    }]
+  },
+  "event": {
+    "type": "tagging",
+    "params": {
+       "tag": "product"
+    }
+  }
+}
