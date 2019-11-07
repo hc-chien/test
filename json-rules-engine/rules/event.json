@@ -10,7 +10,7 @@
   "event": {
     "type": "tagging",
     "params": {
-       "tag": "product"
+       "tags": ["product", "message"]
     }
   }
 }
