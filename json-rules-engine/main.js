@@ -26,7 +26,7 @@ engine.addOperator('exist', (factValue, jsonValue) => {
 
 // regex operator
 engine.addOperator('regex', (factValue, jsonValue) => {
-  var  myRe = new RegExp(jsonValue, 'g');
+  var myRe = new RegExp(jsonValue, 'g');
   var myArray = myRe.exec(factValue);
   return myRe.lastIndex > 0;
 });
